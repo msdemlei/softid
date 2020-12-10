@@ -1,0 +1,64 @@
+\documentclass[11pt,a4paper]{ivoa}
+\input tthdefs
+
+\title{Operational Identification of Software Components in the Virtual
+Observatory}
+
+% see ivoatexDoc for what group names to use here
+\ivoagroup{Ops}
+
+\author[https://wiki.ivoa.net/twiki/bin/view/IVOA/WebHome?topic=MarkusDemleitner]{Markus
+Demleitner}
+\author[https://wiki.ivoa.net/twiki/bin/view/IVOA/MarkusDemleitner?topic=MarkTaylor]{Mark
+Taylor}
+
+\editor{Markus Demleitner}
+
+% \previousversion[????URL????]{????Concise Document Label????}
+\previousversion{This is the first public release}
+       
+
+\begin{document}
+\begin{abstract}
+In the Virtual Observatory, software often talks to other software, and
+while doing it, it is often beneficial to know something about the
+counterpart, be it for statistics (e.g., when ignoring validators) or
+for operations (e.g., when enabling workarounds, or when such
+workarounds can be dropped because components requiring them are no
+longer in use).  This note collects recommended practices on both the
+client and the server side.
+\end{abstract}
+
+
+\section*{Conformance-related definitions}
+
+The words ``MUST'', ``SHALL'', ``SHOULD'', ``MAY'', ``RECOMMENDED'', and
+``OPTIONAL'' (in upper or lower case) used in this document are to be
+interpreted as described in IETF standard RFC2119 \citep{std:RFC2119}.
+
+The \emph{Virtual Observatory (VO)} is a
+general term for a collection of federated resources that can be used
+to conduct astronomical research, education, and outreach.
+The \href{http://www.ivoa.net}{International
+Virtual Observatory Alliance (IVOA)} is a global
+collaboration of separately funded projects to develop standards and
+infrastructure that enable VO applications.
+
+
+\section{Introduction}
+
+
+
+
+\appendix
+\section{Changes from Previous Versions}
+
+No previous versions yet.  
+% these would be subsections "Changes from v. WD-..."
+% Use itemize environments.
+
+
+\bibliography{ivoatex/ivoabib,ivoatex/docrepo}
+
+
+\end{document}
