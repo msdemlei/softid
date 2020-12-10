@@ -1,6 +1,9 @@
 \documentclass[11pt,a4paper]{ivoa}
 \input tthdefs
 
+\lstset{flexiblecolumns=true,numberstyle=\small,showstringspaces=False,
+  identifierstyle=\texttt,defaultdialect=[latex]tex,language=tex}
+
 \title{Operational Identification of Software Components in the Virtual
 Observatory}
 
@@ -92,6 +95,98 @@ As part of a responsible disclosure of a software weakness (or simply a
 request for a software update), server developers might want to contact
 deployers of vulnerable or otherwise broken software.
 
+
+\section{Client Identification}
+
+\subsection{User-Agent Header Standard Usage}
+
+The HTTP User-Agent header may be used by clients to identify their
+nature or origin. The definiition and usage of this header is described
+in RFC2616 \citep{std:HTTP} section 14.43, with additional text on
+syntax in sections 3.8 and 2.2. The basic rule is that the content of
+this field should consist of a sequence of tokens, where each token is
+either a product name (with an optional version indicator), or a
+free-text comment enclosed in parentheses. Formally (BNF from RFC2616):
+
+\begin{lstlisting}
+User-Agent        = "User-Agent" ":" 1*( product | comment )
+product           = token ["/" product-version]
+product-version   = token
+comment           = "(" *( ctext | quoted-pair | comment ) ")"
+ctext             = <any TEXT excluding "(" and ")">
+\end{lstlisting}
+
+Additional rules/conventions are that more-significant tokens should
+appear earlier in the sequence, and that the content should be ``short
+and to the point''.
+
+\subsection{User-Agent Field IVOA Recommendations}
+
+The Operations IG endorses and encourages use of these rules concerning
+the User-Agent header, and adds a further convention, which does not
+conflict with the above rules: clients whose primary purpose relates to
+operations within the VO should indicate that purpose by including a
+comment token of the form 
+$$\hbox{\verb|(IVOA-<op-purpose> <optional-extra-text>)|.}$$
+
+Suggested op-purpose values are currently:
+
+\begin{description}
+\item[validate]
+client is performing service validation, e.g., to assess service
+conformance to standards.
+\item[monitor] client is performing service monitoring, e.g.,
+to assess service availability or performance.
+\item[harvest] client is harvesting records e.g., to populate 
+a registry or registry-like database.
+\end{description}
+
+This list may evolve in the future (suggestions should be discussed on
+the ops@ivoa.net mailing list). Custom op-purpose values are permitted.
+Case is not significant in op-purpose values or in its "IVOA-" prefix.
+
+The \verb|<optional-extra-text>| may  be used to indicate a URL at which
+more information about the client, or perhaps about the results it is
+gathering from the current request, can be found.
+
+Formally:
+
+\begin{lstlisting}
+ivoa-comment  = "(IVOA-" op-purpose *( 
+    ctext | quoted-pair | comment ) ")"
+op-purpose   = "validate" | "monitor" | "harvest" | token
+\end{lstlisting}
+
+Tokens of the form \verb|ivoa-comment| should not appear in the
+user-agent field if the request is a ``normal'' user science query. There
+are obviously grey areas between operational and science requests; this
+convention does not attempt to provide a rigid definition of these
+categories.
+
+This arrangement allows service operators to test in their logs for
+User-agent values whose content matches the sequence \verb|"(IVOA-"|, or
+perhaps \verb|"(IVOA-validate"|, and adjust their usage statistics
+appropriately. Note, however, that it is not feasible to force operational
+clients to follow this convention, so service operators will still need
+to be careful in analysing their usage statistics.
+
+\subsection{Examples}
+
+A science query from the STILTS tapquery TAP client might contain the
+HTTP header
+\begin{lstlisting}
+User-Agent: STILTS/3.1-4 Java/1.8.0_181
+\end{lstlisting}
+while a query from the STILTS taplint TAP service validator might
+contain the header
+\begin{lstlisting}
+User-Agent: STILTS/3.1-4 (IVOA-validate) Java/1.8.0_181
+\end{lstlisting}
+or maybe (line break for typographic reasons)
+\begin{lstlisting}
+User-Agent: STILTS/3.1-4 (IVOA-validate
+            http://validators.org/results) Java/1.8.0_181
+\end{lstlisting}
 
 \appendix
 \section{Changes from Previous Versions}
