@@ -29,6 +29,15 @@ longer in use).  This note collects recommended practices on both the
 client and the server side.
 \end{abstract}
 
+\section*{Acknowledgement}
+
+The bulk of this material was taken from a page on the IVOA
+wiki\footnote{\url{https://wiki.ivoa.net/twiki/bin/view/IVOA/UserAgentUsage}}
+that resulted from a discussion at the 2018 College Park Interop (client
+side) and a
+talk\footnote{\url{https://wiki.ivoa.net/internal/IVOA/InterOpOct2019Ops/serversoftware.pdf}}
+at the 2019 Groningen Interop (server side).
+
 
 \section*{Conformance-related definitions}
 
@@ -48,6 +57,40 @@ infrastructure that enable VO applications.
 \section{Introduction}
 
 
+\subsection{Use Cases}
+
+\subsubsection{Recognising Maintenance Queries}
+
+In the VO, several clients connect services for operational purposes,
+for instance in order to perform service validation or monitoring. If
+service providers are gathering statistics on service usage, they may
+wish to distinguish these different classes of request.
+
+\subsubsection{Dropping Workarounds}
+
+Client occasinally work around bugs in server software; these
+workarounds over time are a maintenance liability, and hence it is
+advantageous to drop them when they are no longer needed.  To find this
+out, a simple way to enumerate server software running on the VO.
+
+Conversely, a server may contain workarounds for client bugs.  Again,
+being able to find out whether code implementing these can be safely
+dropped without adverse consequences on clients actually in use has a
+clear benefit.
+
+\subsubsection{Client Snooping}
+
+Servers may offer experimental or advanced features to clients it knows
+(though such use should in general be frowned upon, as it violates the
+spirit of interoperability).  Similarly, clients might under certain
+circumstances want to enable or disable certain behaviour when realising
+they are communicating with a known server component.
+
+\subsubsection{Notifications}
+
+As part of a responsible disclosure of a software weakness (or simply a
+request for a software update), server developers might want to contact
+deployers of vulnerable or otherwise broken software.
 
 
 \appendix
