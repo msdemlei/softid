@@ -8,7 +8,7 @@
 Observatory}
 
 % see ivoatexDoc for what group names to use here
-\ivoagroup{Ops}
+\ivoagroup{Operations}
 
 \author[https://wiki.ivoa.net/twiki/bin/view/IVOA/WebHome?topic=MarkusDemleitner]{Markus
 Demleitner}
@@ -23,13 +23,12 @@ Taylor}
 
 \begin{document}
 \begin{abstract}
-In the Virtual Observatory, software often talks to other software, and
-while doing it, it is often beneficial to know something about the
-counterpart, be it for statistics (e.g., when ignoring validators) or
-for operations (e.g., when enabling workarounds, or when such
-workarounds can be dropped because components requiring them are no
-longer in use).  This note collects recommended practices on both the
-client and the server side.
+In the Virtual Observatory, software often talks to other software.
+During development, while gathering statistics (e.g., ignoring
+validators), or in operations (e.g., enabling workarounds for known
+bugs), it is often beneficial to know something about the
+counterpart.  This note collects recommended practices on both the
+client and the server side for HTTP-based protocols.
 \end{abstract}
 
 \section*{Acknowledgement}
@@ -60,14 +59,15 @@ infrastructure that enable VO applications.
 \section{Introduction}
 
 Very early on in the construction of client-server architectures it was
-found that it is useful to have mechanisms to find which software runs
+found that it is useful to have mechanisms for 
+discovering which software runs
 at the other side of a connection, rather typcially to aid in debugging.
 In particular, HTTP, which is at the basis of many of the VO's protocols
 \citep{std:HTTP}, specifies the request header \emph{User-Agent} that
-identifies the client software (``or statistical purposes, the tracing
+identifies the client software (``for statistical purposes, the tracing
 of protocol violations, and automated recognition of user agents for the
 sake of tailoring responses to avoid particular user agent
-limitations'').
+limitations'') and the response header \emph{Server}.
 
 These general rules were found insufficient for various purposes in the
 Virtual Observatory.  For instance, use case~\ref{uc:stats} was brought
@@ -81,7 +81,7 @@ layers of request handling.
 This note gives recommendations on how to make the header fields more
 useful for VO operations.  While strictly only applicable to HTTP-based
 protocols, we believe similar practices should be forseen where, as
-typical in VOEvent transports, communication mechanisms are not built on
+with most VOEvent transports, communication mechanisms are not built on
 top of HTTP.
 
 
@@ -93,19 +93,20 @@ top of HTTP.
 In the VO, several clients connect services for operational purposes,
 for instance in order to perform service validation or monitoring. If
 service providers are gathering statistics on service usage, they may
-wish to distinguish these different classes of request.
+wish to distinguish these different classes of requests from requests
+presumably coming from science users.
 
 \subsubsection{Dropping Workarounds}
 
-Client occasinally work around bugs in server software; these
+Clients occasionally work around bugs in server software; these
 workarounds over time are a maintenance liability, and hence it is
-advantageous to drop them when they are no longer needed.  To find this
-out, a simple way to enumerate server software running on the VO.
+advantageous to drop them when they are no longer needed.  To establish
+when a workaround can safely be dropped, developers need a simple way to
+enumerate with server software is still running in the VO.
 
 Conversely, a server may contain workarounds for client bugs.  Again,
 being able to find out whether code implementing these can be safely
-dropped without adverse consequences on clients actually in use has a
-clear benefit.
+dropped without adverse consequences on users is obviously beneficial.
 
 \subsubsection{Client Snooping}
 
@@ -115,7 +116,7 @@ spirit of interoperability).  Similarly, clients might under certain
 circumstances want to enable or disable certain behaviour when realising
 they are communicating with a known server component.
 
-\subsection{Debugging}
+\subsubsection{Debugging}
 
 For diagnosing failures, it is often useful to know which components are
 part of a communication leading up the failure.  This is in particular
@@ -128,21 +129,23 @@ As part of a responsible disclosure of a software weakness (or simply a
 request for a software update), server developers might want to contact
 deployers of vulnerable or otherwise broken software.
 
-\subsubsection{Security and Privacy Considerations}
+\subsection{Security and Privacy Considerations}
 
-Several guidelines to IT security dissuade from giving details on the
+Several guidelines on IT security discourage giving details on the
 software that drives a certain site in order to not give attackers
 information that might be useful in an attack.
 
 Following the practices proposed here will, indeed, weaken the
-``security by obscurity'' put forward in these treatments.  On the other
+``security by obscurity'' put forward in these treatments; on the other
+hand, when attackers only have to scan several hundred URLs,
+relying on security by obscurity does not seem a promising policy.
+
+On the other
 hand, in the VO, where software providers rather typically are members
-of the community, given the Registry, these software providers can contact
+of the community, and given the Registry which allows rapid discovery of
+active services, these software providers can contact
 operators of vulnerable services given sufficiently precise software
 identification even before a vulnerability is disclosed.
-
-In that sense the server-side security implications of this proposal go
-both ways.
 
 The identification of the client has fewer security implications, as it
 seems unlikely that services can target clients by software version.
@@ -164,7 +167,7 @@ automated clients for which there usually are no privacy concerns.
 
 The HTTP User-Agent header may be used by clients to identify their
 nature or origin. The definiition and usage of this header is described
-in RFC2616 \citep{std:HTTP} section 14.43, with additional text on
+in RFC 2616 \citep{std:HTTP} section 14.43, with additional text on
 syntax in sections 3.8 and 2.2. The basic rule is that the content of
 this field should consist of a sequence of tokens, where each token is
 either a product name (with an optional version indicator), or a
@@ -178,7 +181,7 @@ comment           = "(" *( ctext | quoted-pair | comment ) ")"
 ctext             = <any TEXT excluding "(" and ")">
 \end{lstlisting}
 
-Additional rules/conventions are that more-significant tokens should
+Additional rules and conventions are that more-significant tokens should
 appear earlier in the sequence, and that the content should be ``short
 and to the point''.
 
@@ -203,7 +206,7 @@ to assess service availability or performance.
 a registry or registry-like database.
 \end{description}
 
-This list may evolve in the future (suggestions should be discussed on
+This list may evolve in the future, where extensions should be proposed on 
 the ops@ivoa.net mailing list). Custom op-purpose values are permitted.
 Case is significant in op-purpose values and its "IVOA-" prefix.
 
