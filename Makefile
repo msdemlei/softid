@@ -29,6 +29,6 @@ FIGURES =
 VECTORFIGURES = 
 
 # Additional files to distribute (e.g., CSS, schema files, examples...)
-AUX_FILES = 
+AUX_FILES = tapstats.py
 
 include ivoatex/Makefile
