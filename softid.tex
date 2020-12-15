@@ -59,10 +59,36 @@ infrastructure that enable VO applications.
 
 \section{Introduction}
 
+Very early on in the construction of client-server architectures it was
+found that it is useful to have mechanisms to find which software runs
+at the other side of a connection, rather typcially to aid in debugging.
+In particular, HTTP, which is at the basis of many of the VO's protocols
+\citep{std:HTTP}, specifies the request header \emph{User-Agent} that
+identifies the client software (``or statistical purposes, the tracing
+of protocol violations, and automated recognition of user agents for the
+sake of tailoring responses to avoid particular user agent
+limitations'').
+
+These general rules were found insufficient for various purposes in the
+Virtual Observatory.  For instance, use case~\ref{uc:stats} was brought
+up at the College Park Interop in 2018.  Also, it was found that most
+servers did not identify the relevant protocol implementations but
+rather libraries the services were built on or even reverse proxies they
+ran behind -- information that is usually not useful when diagnosing
+operational problems in the VO, which mostly originate in the higher
+layers of request handling.
+
+This note gives recommendations on how to make the header fields more
+useful for VO operations.  While strictly only applicable to HTTP-based
+protocols, we believe similar practices should be forseen where, as
+typical in VOEvent transports, communication mechanisms are not built on
+top of HTTP.
+
 
 \subsection{Use Cases}
 
 \subsubsection{Recognising Maintenance Queries}
+\label{uc:stats}
 
 In the VO, several clients connect services for operational purposes,
 for instance in order to perform service validation or monitoring. If
@@ -94,6 +120,35 @@ they are communicating with a known server component.
 As part of a responsible disclosure of a software weakness (or simply a
 request for a software update), server developers might want to contact
 deployers of vulnerable or otherwise broken software.
+
+\subsubsection{Security and Privacy Considerations}
+
+Several guidelines to IT security dissuade from giving details on the
+software that drives a certain site in order to not give attackers
+information that might be useful in an attack.
+
+Following the practices proposed here will, indeed, weaken the
+``security by obscurity'' put forward in these treatments.  On the other
+hand, in the VO, where software providers rather typically are members
+of the community, given the Registry, these software providers can contact
+operators of vulnerable services given sufficiently precise software
+identification even before a vulnerability is disclosed.
+
+In that sense the server-side security implications of this proposal go
+both ways.
+
+The identification of the client has fewer security implications, as it
+seems unlikely that services can target clients by software version.
+
+Software identification does play a role in user privacy; user agents
+are regularly employed in user tracking on the WWW.  While, presumably,
+the generally non-profit operators in the VO will not use such data to
+significantly violate their users' privacy, client authors may want to
+give users the possibility to somewhat reduce the information content of
+the headers proposed here.
+
+On the other hand, the mechanisms proposed here are most relevant for
+automated clients for which there usually are no privacy concerns.
 
 
 \section{Client Identification}
