@@ -19,7 +19,8 @@ Taylor}
 
 % \previousversion[????URL????]{????Concise Document Label????}
 \previousversion{This is the first public release}
-       
+
+\newcommand{\headername}[1]{{\tt #1}}
 
 \begin{document}
 \begin{abstract}
@@ -63,11 +64,11 @@ found that it is useful to have mechanisms for
 discovering which software runs
 at the other side of a connection, rather typically to aid in debugging.
 In particular, HTTP, which is the basis of many of the VO's protocols
-\citep{std:HTTP}, specifies the request header \emph{User-Agent} that
+\citep{std:HTTP}, specifies the request header \headername{User-Agent} that
 identifies the client software (``for statistical purposes, the tracing
 of protocol violations, and automated recognition of user agents for the
 sake of tailoring responses to avoid particular user agent
-limitations'') and the response header \emph{Server}.
+limitations'') and the response header \headername{Server}.
 
 These general rules were found insufficient for various purposes in the
 Virtual Observatory.  For instance, use case~\ref{uc:stats} was brought
@@ -167,7 +168,8 @@ automated clients for which there usually are no privacy concerns.
 
 \subsection{User-Agent Header Standard Usage}
 
-The HTTP User-Agent header may be used by clients to identify their
+The HTTP \headername{User-Agent} header may be used by clients
+to identify their
 nature or origin. The definition and usage of this header is described
 in RFC 2616 \citep{std:HTTP} section 14.43, with additional text on
 syntax in sections 3.8 and 2.2. The basic rule is that the content of
@@ -190,7 +192,8 @@ and to the point''.
 \subsection{User-Agent Field IVOA Recommendations}
 
 The Operations IG endorses and encourages use of these rules concerning
-the User-Agent header, and adds a further convention, which does not
+the \headername{User-Agent} header,
+and adds a further convention, which does not
 conflict with the above rules: clients whose primary purpose relates to
 operations within the VO should indicate that purpose by including a
 comment token of the form 
@@ -225,13 +228,15 @@ op-purpose   = "validate" | "monitor" | "harvest" | token
 \end{verbatim}
 
 Tokens of the form \verb|ivoa-comment| should not appear in the
-user-agent field if the request is a ``normal'' user science query. There
+\headername{User-Agent} field
+if the request is a ``normal'' user science query. There
 are obviously grey areas between operational and science requests; this
 convention does not attempt to provide a rigid definition of these
 categories.
 
 This arrangement allows service operators to test in their logs for
-User-agent values whose content matches the sequence \verb|"(IVOA-"|, or
+\headername{User-Agent} values
+whose content matches the sequence \verb|"(IVOA-"|, or
 perhaps \verb|"(IVOA-validate"|, and adjust their usage statistics
 appropriately. Note, however, that it is not feasible to force operational
 clients to follow this convention, so service operators will still need
@@ -280,7 +285,8 @@ services\footnote{\auxiliaryurl{tapstats.py}; for the S*AP protocols,
 some URL heuristics might be necessary in order to achieve true server
 enumeration.}.
 
-Hence, for now we recommend setting the standard HTTP server header as
+Hence, for now we recommend setting the standard HTTP
+\headername{Server} header as
 per RFC 2616.  However, against most of what is found at the time of
 writing, we recommend to include product token(s)
 (cf.sect.~\ref{sect:client}) for the VO software actually processing the
