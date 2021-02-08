@@ -175,13 +175,13 @@ this field should consist of a sequence of tokens, where each token is
 either a product name (with an optional version indicator), or a
 free-text comment enclosed in parentheses. Formally (BNF from RFC2616):
 
-\begin{lstlisting}
+\begin{verbatim}
 User-Agent        = "User-Agent" ":" 1*( product | comment )
 product           = token ["/" product-version]
 product-version   = token
 comment           = "(" *( ctext | quoted-pair | comment ) ")"
 ctext             = <any TEXT excluding "(" and ")">
-\end{lstlisting}
+\end{verbatim}
 
 Additional rules and conventions are that more-significant tokens should
 appear earlier in the sequence, and that the content should be ``short
@@ -218,11 +218,11 @@ gathering from the current request, can be found.
 
 Formally:
 
-\begin{lstlisting}
+\begin{verbatim}
 ivoa-comment  = "(IVOA-" op-purpose *( 
     ctext | quoted-pair | comment ) ")"
 op-purpose   = "validate" | "monitor" | "harvest" | token
-\end{lstlisting}
+\end{verbatim}
 
 Tokens of the form \verb|ivoa-comment| should not appear in the
 user-agent field if the request is a ``normal'' user science query. There
@@ -241,19 +241,19 @@ to be careful in analysing their usage statistics.
 
 A science query from the STILTS tapquery TAP client might contain the
 HTTP header
-\begin{lstlisting}
+\begin{verbatim}
 User-Agent: STILTS/3.1-4 Java/1.8.0_181
-\end{lstlisting}
+\end{verbatim}
 while a query from the STILTS taplint TAP service validator might
 contain the header
-\begin{lstlisting}
+\begin{verbatim}
 User-Agent: STILTS/3.1-4 (IVOA-validate) Java/1.8.0_181
-\end{lstlisting}
+\end{verbatim}
 or maybe (line break for typographic reasons)
-\begin{lstlisting}
+\begin{verbatim}
 User-Agent: STILTS/3.1-4 (IVOA-validate
             http://validators.org/results) Java/1.8.0_181
-\end{lstlisting}
+\end{verbatim}
 
 The server identification example, tapstat.py, discussed in
 section~\ref{sect:server} illustrates one way to add such headers using
