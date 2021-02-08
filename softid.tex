@@ -61,8 +61,8 @@ infrastructure that enable VO applications.
 Very early on in the construction of client-server architectures it was
 found that it is useful to have mechanisms for 
 discovering which software runs
-at the other side of a connection, rather typcially to aid in debugging.
-In particular, HTTP, which is at the basis of many of the VO's protocols
+at the other side of a connection, rather typically to aid in debugging.
+In particular, HTTP, which is the basis of many of the VO's protocols
 \citep{std:HTTP}, specifies the request header \emph{User-Agent} that
 identifies the client software (``for statistical purposes, the tracing
 of protocol violations, and automated recognition of user agents for the
@@ -90,7 +90,7 @@ top of HTTP.
 \subsubsection{Recognising Maintenance Queries}
 \label{uc:stats}
 
-In the VO, several clients connect services for operational purposes,
+In the VO, several clients connect to services for operational purposes,
 for instance in order to perform service validation or monitoring. If
 service providers are gathering statistics on service usage, they may
 wish to distinguish these different classes of requests from requests
@@ -103,7 +103,7 @@ Clients occasionally work around bugs in server software; these
 workarounds over time are a maintenance liability, and hence it is
 advantageous to drop them when they are no longer needed.  To establish
 when a workaround can safely be dropped, developers need a simple way to
-enumerate with server software is still running in the VO.
+enumerate which server software is still running in the VO.
 
 Conversely, a server may contain workarounds for client bugs.  Again,
 being able to find out whether code implementing these can be safely
@@ -111,11 +111,11 @@ dropped without adverse consequences on users is obviously beneficial.
 
 \subsubsection{Client Snooping}
 
-Servers may offer experimental or advanced features to clients it knows
+A server may offer experimental or advanced features to clients it knows
 (though such use should in general be frowned upon, as it violates the
-spirit of interoperability).  Similarly, clients might under certain
+spirit of interoperability).  Similarly, a client might under certain
 circumstances want to enable or disable certain behaviour when realising
-they are communicating with a known server component.
+it is communicating with a known server component.
 
 \subsubsection{Debugging}
 
@@ -168,7 +168,7 @@ automated clients for which there usually are no privacy concerns.
 \subsection{User-Agent Header Standard Usage}
 
 The HTTP User-Agent header may be used by clients to identify their
-nature or origin. The definiition and usage of this header is described
+nature or origin. The definition and usage of this header is described
 in RFC 2616 \citep{std:HTTP} section 14.43, with additional text on
 syntax in sections 3.8 and 2.2. The basic rule is that the content of
 this field should consist of a sequence of tokens, where each token is
@@ -208,11 +208,11 @@ to assess service availability or performance.
 a registry or registry-like database.
 \end{description}
 
-This list may evolve in the future, where extensions should be proposed on 
-the ops@ivoa.net mailing list). Custom op-purpose values are permitted.
-Case is significant in op-purpose values and its "IVOA-" prefix.
+This list may evolve in the future; extensions should be proposed on 
+the ops@ivoa.net mailing list. Custom op-purpose values are permitted.
+Case is significant in op-purpose values and its ``IVOA-'' prefix.
 
-The \verb|<optional-extra-text>| may  be used to indicate a URL at which
+The \verb|<optional-extra-text>| may be used to indicate a URL at which
 more information about the client, or perhaps about the results it is
 gathering from the current request, can be found.
 
@@ -255,7 +255,7 @@ User-Agent: STILTS/3.1-4 (IVOA-validate
             http://validators.org/results) Java/1.8.0_181
 \end{lstlisting}
 
-The server identification example, tapstat.py, diescussed in
+The server identification example, tapstat.py, discussed in
 section~\ref{sect:server} illustrates one way to add such headers using
 Python's built-in urllib.
 
