@@ -220,9 +220,13 @@ This list may evolve in the future; extensions should be proposed on
 the ops@ivoa.net mailing list. Custom {\tt op-purpose} values are permitted.
 Case is significant in {\tt op-purpose} values and its ``{\tt IVOA-}'' prefix.
 
-The \verb|<optional-extra-text>| may be used to indicate a URL at which
+The \verb|<optional-extra-text>| could be used to indicate a URL at which
 more information about the client, or perhaps about the results it is
 gathering from the current request, can be found.
+However, in accordance with the injunction from RFC 7231
+{\em ``A user agent SHOULD NOT generate a User-Agent field containing
+needlessly fine-grained detail''},
+such additional text should be added only when it serves a real purpose.
 
 Formally:
 
