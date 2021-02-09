@@ -186,7 +186,7 @@ The definition was updated at RFC 7231 section 5.5.3.
 The basic rule is that the content of
 this field should consist of a sequence of tokens, where each token is
 either a product name (with an optional version indicator), or a
-free-text comment enclosed in parentheses. Formally (BNF from RFC2616):
+free-text comment enclosed in parentheses. Formally (BNF from RFC 2616):
 
 \begin{verbatim}
 User-Agent        = "User-Agent" ":" 1*( product | comment )
@@ -194,6 +194,8 @@ product           = token ["/" product-version]
 product-version   = token
 comment           = "(" *( ctext | quoted-pair | comment ) ")"
 ctext             = <any TEXT excluding "(" and ")">
+token             = 1*<any CHAR except CTLs or separators>
+quoted-pair       = "\" CHAR
 \end{verbatim}
 
 Additional rules and conventions are that more-significant tokens should
