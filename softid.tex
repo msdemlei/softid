@@ -170,6 +170,7 @@ automated clients for which there usually are no privacy concerns.
 \label{sect:client}
 
 \subsection{User-Agent Header Standard Usage}
+\label{sect:user-agent}
 
 The HTTP \headername{User-Agent} header may be used by clients
 to identify their
@@ -281,6 +282,49 @@ by setting the {\tt http.agent} system property.
 \section{Server Identification}
 \label{sect:server}
 
+\subsection{Server Header Standard Usage}
+
+The HTTP \headername{Server} header may be used by servers to
+identify their implementation software.
+It is defined by RFC 2616 section 14.38,
+updated by RFC 7231 section 7.4.2.
+The header value syntax is identical to that for the
+\headername{User-Agent} header described in section \ref{sect:user-agent}.
+
+\subsection{Server Header IVOA Recommendations}
+
+We recommend using the \headername{Server} header
+in accordance with standard usage,
+but VO servers should where possible include product tokens
+for the VO software actually processing the request.
+So as well as tokens identifying the server infrastructure which
+may be inserted by general purpose HTTP server software,
+it is recommended for VO services to insert tokens for specific
+VO components that may affect the returned results.
+As on the client side, list VO components in front of
+more generic HTTP server software.
+
+\subsection{Examples}
+
+A server running DaCHS might take steps to issue HTTP responses
+containing the header:
+\begin{verbatim}
+DaCHS/2.2.1 twistedWeb/18.9.0
+\end{verbatim}
+which would be preferred over the basic
+\begin{verbatim}
+TwistedWeb/18.9.0
+\end{verbatim}
+which the server infrastructure might provide by default.
+
+This note comes with an example programme obtaining global server
+statistics for registered TAP
+services\footnote{\auxiliaryurl{tapstats.py}; for the S*AP protocols,
+some URL heuristics might be necessary in order to achieve true server
+enumeration.}.
+
+\subsection{Notes}
+
 Use case~\ref{uc:global} might appear to require Registry support for
 server identification to enable queries like ``give me a list of all
 server software in use in the VO'' or ``which operators run version 21.2
@@ -291,22 +335,6 @@ will serve many different resources), the use cases for global server
 identification can probably be satisfied by running one request each
 against these servers, access URLs for which can readily be discovered
 in the Registry as it is.  
-
-This note comes with an example programme obtaining global server
-statistics for registered TAP
-services\footnote{\auxiliaryurl{tapstats.py}; for the S*AP protocols,
-some URL heuristics might be necessary in order to achieve true server
-enumeration.}.
-
-Hence, for now we recommend setting the standard HTTP
-\headername{Server} header as
-per RFC 2616.  However, against most of what is found at the time of
-writing, we recommend to include product token(s)
-(cf.sect.~\ref{sect:client}) for the VO software actually processing the
-request.  For instance, use \verb|DaCHS/2.2.1 twistedWeb/18.9.0| rather than
-\verb|TwistedWeb/18.9.0| or \verb|vollt/2.3 nginx/1.14.0| rather than
-\verb|nginx/1.14.0|.  As on the client side, list VO components in front
-of more generic HTTP server software.
 
 \appendix
 \section{Changes from Previous Versions}
