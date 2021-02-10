@@ -19,7 +19,8 @@ Taylor}
 
 % \previousversion[????URL????]{????Concise Document Label????}
 \previousversion{This is the first public release}
-       
+
+\newcommand{\headername}[1]{{\tt #1}}
 
 \begin{document}
 \begin{abstract}
@@ -29,6 +30,9 @@ validators), or in operations (e.g., enabling workarounds for known
 bugs), it is often beneficial to know something about the
 counterpart.  This note collects recommended practices on both the
 client and the server side for HTTP-based protocols.
+These recommendations make use of the existing standard HTTP headers
+\headername{User-Agent} for client requests and
+\headername{Server} for server responses.
 \end{abstract}
 
 \section*{Acknowledgement}
@@ -61,13 +65,13 @@ infrastructure that enable VO applications.
 Very early on in the construction of client-server architectures it was
 found that it is useful to have mechanisms for 
 discovering which software runs
-at the other side of a connection, rather typcially to aid in debugging.
-In particular, HTTP, which is at the basis of many of the VO's protocols
-\citep{std:HTTP}, specifies the request header \emph{User-Agent} that
+at the other side of a connection, rather typically to aid in debugging.
+In particular, HTTP, which is the basis of many of the VO's protocols
+\citep{std:HTTP}, specifies the request header \headername{User-Agent} that
 identifies the client software (``for statistical purposes, the tracing
 of protocol violations, and automated recognition of user agents for the
 sake of tailoring responses to avoid particular user agent
-limitations'') and the response header \emph{Server}.
+limitations'') and the response header \headername{Server}.
 
 These general rules were found insufficient for various purposes in the
 Virtual Observatory.  For instance, use case~\ref{uc:stats} was brought
@@ -90,7 +94,7 @@ top of HTTP.
 \subsubsection{Recognising Maintenance Queries}
 \label{uc:stats}
 
-In the VO, several clients connect services for operational purposes,
+In the VO, several clients connect to services for operational purposes,
 for instance in order to perform service validation or monitoring. If
 service providers are gathering statistics on service usage, they may
 wish to distinguish these different classes of requests from requests
@@ -103,7 +107,7 @@ Clients occasionally work around bugs in server software; these
 workarounds over time are a maintenance liability, and hence it is
 advantageous to drop them when they are no longer needed.  To establish
 when a workaround can safely be dropped, developers need a simple way to
-enumerate with server software is still running in the VO.
+enumerate which server software is still running in the VO.
 
 Conversely, a server may contain workarounds for client bugs.  Again,
 being able to find out whether code implementing these can be safely
@@ -111,11 +115,11 @@ dropped without adverse consequences on users is obviously beneficial.
 
 \subsubsection{Client Snooping}
 
-Servers may offer experimental or advanced features to clients it knows
+A server may offer experimental or advanced features to clients it knows
 (though such use should in general be frowned upon, as it violates the
-spirit of interoperability).  Similarly, clients might under certain
+spirit of interoperability).  Similarly, a client might under certain
 circumstances want to enable or disable certain behaviour when realising
-they are communicating with a known server component.
+it is communicating with a known server component.
 
 \subsubsection{Debugging}
 
@@ -161,42 +165,55 @@ the headers proposed here.
 On the other hand, the mechanisms proposed here are most relevant for
 automated clients for which there usually are no privacy concerns.
 
+Note also that the recommendations presented in this Note
+have only incremental impacts on security and privacy;
+the standard server and client header usage on which they
+build already have implications in these areas.
+
 
 \section{Client Identification}
 \label{sect:client}
 
 \subsection{User-Agent Header Standard Usage}
+\label{sect:user-agent}
 
-The HTTP User-Agent header may be used by clients to identify their
-nature or origin. The definiition and usage of this header is described
+The HTTP \headername{User-Agent} header may be used by clients
+to identify their
+nature or origin. The definition and usage of this header is described
 in RFC 2616 \citep{std:HTTP} section 14.43, with additional text on
-syntax in sections 3.8 and 2.2. The basic rule is that the content of
+syntax in sections 3.8 and 2.2.
+The definition was updated at RFC 7231 section 5.5.3.
+The basic rule is that the content of
 this field should consist of a sequence of tokens, where each token is
 either a product name (with an optional version indicator), or a
-free-text comment enclosed in parentheses. Formally (BNF from RFC2616):
+free-text comment enclosed in parentheses. Formally (BNF from RFC 2616):
 
-\begin{lstlisting}
+\begin{verbatim}
 User-Agent        = "User-Agent" ":" 1*( product | comment )
 product           = token ["/" product-version]
 product-version   = token
 comment           = "(" *( ctext | quoted-pair | comment ) ")"
 ctext             = <any TEXT excluding "(" and ")">
-\end{lstlisting}
+token             = 1*<any CHAR except CTLs or separators>
+quoted-pair       = "\" CHAR
+\end{verbatim}
 
 Additional rules and conventions are that more-significant tokens should
 appear earlier in the sequence, and that the content should be ``short
 and to the point''.
 
-\subsection{User-Agent Field IVOA Recommendations}
+\subsection{User-Agent Header IVOA Recommendations}
 
-The Operations IG endorses and encourages use of these rules concerning
-the User-Agent header, and adds a further convention, which does not
-conflict with the above rules: clients whose primary purpose relates to
-operations within the VO should indicate that purpose by including a
+The Operations IG endorses and encourages use of these standard
+rules concerning the \headername{User-Agent} header,
+and adds a further convention, which does not
+conflict with the above rules: clients whose primary purpose
+is \emph{operational}, as opposed to \emph{scientific},
+should indicate that purpose by including a
 comment token of the form 
 $$\hbox{\verb|(IVOA-<op-purpose> <optional-extra-text>)|.}$$
 
-Suggested op-purpose values are currently:
+Suggested {\tt op-purpose} values are currently:
 
 \begin{description}
 \item[validate]
@@ -208,31 +225,37 @@ to assess service availability or performance.
 a registry or registry-like database.
 \end{description}
 
-This list may evolve in the future, where extensions should be proposed on 
-the ops@ivoa.net mailing list). Custom op-purpose values are permitted.
-Case is significant in op-purpose values and its "IVOA-" prefix.
+This list may evolve in the future; extensions should be proposed on 
+the ops@ivoa.net mailing list. Custom {\tt op-purpose} values are permitted.
+Case is significant in {\tt op-purpose} values and its ``{\tt IVOA-}'' prefix.
 
-The \verb|<optional-extra-text>| may  be used to indicate a URL at which
+The \verb|<optional-extra-text>| could be used to indicate a URL at which
 more information about the client, or perhaps about the results it is
 gathering from the current request, can be found.
+However, in accordance with the injunction from RFC 7231
+{\em ``A user agent SHOULD NOT generate a User-Agent field containing
+needlessly fine-grained detail''},
+such additional text should be added only when it serves a real purpose.
 
 Formally:
 
-\begin{lstlisting}
+\begin{verbatim}
 ivoa-comment  = "(IVOA-" op-purpose *( 
     ctext | quoted-pair | comment ) ")"
 op-purpose   = "validate" | "monitor" | "harvest" | token
-\end{lstlisting}
+\end{verbatim}
 
 Tokens of the form \verb|ivoa-comment| should not appear in the
-user-agent field if the request is a ``normal'' user science query. There
+\headername{User-Agent} field
+if the request is a ``normal'' user science query. There
 are obviously grey areas between operational and science requests; this
 convention does not attempt to provide a rigid definition of these
 categories.
 
 This arrangement allows service operators to test in their logs for
-User-agent values whose content matches the sequence \verb|"(IVOA-"|, or
-perhaps \verb|"(IVOA-validate"|, and adjust their usage statistics
+\headername{User-Agent} values
+whose content matches the sequence ``\verb|(IVOA-|'', or
+perhaps ``\verb|(IVOA-validate|'', and adjust their usage statistics
 appropriately. Note, however, that it is not feasible to force operational
 clients to follow this convention, so service operators will still need
 to be careful in analysing their usage statistics.
@@ -241,27 +264,74 @@ to be careful in analysing their usage statistics.
 
 A science query from the STILTS tapquery TAP client might contain the
 HTTP header
-\begin{lstlisting}
+\begin{verbatim}
 User-Agent: STILTS/3.1-4 Java/1.8.0_181
-\end{lstlisting}
+\end{verbatim}
 while a query from the STILTS taplint TAP service validator might
 contain the header
-\begin{lstlisting}
+\begin{verbatim}
 User-Agent: STILTS/3.1-4 (IVOA-validate) Java/1.8.0_181
-\end{lstlisting}
+\end{verbatim}
 or maybe (line break for typographic reasons)
-\begin{lstlisting}
+\begin{verbatim}
 User-Agent: STILTS/3.1-4 (IVOA-validate
             http://validators.org/results) Java/1.8.0_181
-\end{lstlisting}
+\end{verbatim}
 
-The server identification example, tapstat.py, diescussed in
+The server identification example, tapstat.py, discussed in
 section~\ref{sect:server} illustrates one way to add such headers using
 Python's built-in urllib.
+
+In Java, an application can be configured to add tokens in this way
+to the \headername{User-Agent} value for all HTTP client requests
+by setting the {\tt http.agent} system property.
 
 
 \section{Server Identification}
 \label{sect:server}
+
+\subsection{Server Header Standard Usage}
+
+The HTTP \headername{Server} header may be used by servers to
+identify their implementation software.
+It is defined by RFC 2616 section 14.38,
+updated by RFC 7231 section 7.4.2.
+The header value syntax is identical to that for the
+\headername{User-Agent} header described in section \ref{sect:user-agent}.
+
+\subsection{Server Header IVOA Recommendations}
+
+We recommend using the \headername{Server} header
+in accordance with standard usage,
+but VO servers should where possible include product tokens
+for the VO software actually processing the request.
+So as well as tokens identifying the server infrastructure which
+may be inserted by general purpose HTTP server software,
+it is recommended for VO services to insert tokens for specific
+VO components that may affect the returned results.
+As on the client side, list VO components in front of
+more generic HTTP server software.
+
+\subsection{Examples}
+
+A server running DaCHS might take steps to issue HTTP responses
+containing the header:
+\begin{verbatim}
+DaCHS/2.2.1 twistedWeb/18.9.0
+\end{verbatim}
+which would be preferred over the basic
+\begin{verbatim}
+TwistedWeb/18.9.0
+\end{verbatim}
+which the server infrastructure might provide by default.
+
+This note comes with an example programme obtaining global server
+statistics for registered TAP
+services\footnote{\auxiliaryurl{tapstats.py}; for the S*AP protocols,
+some URL heuristics might be necessary in order to achieve true server
+enumeration.}.
+
+\subsection{Notes}
 
 Use case~\ref{uc:global} might appear to require Registry support for
 server identification to enable queries like ``give me a list of all
@@ -273,21 +343,6 @@ will serve many different resources), the use cases for global server
 identification can probably be satisfied by running one request each
 against these servers, access URLs for which can readily be discovered
 in the Registry as it is.  
-
-This note comes with an example programme obtaining global server
-statistics for registered TAP
-services\footnote{\auxiliaryurl{tapstats.py}; for the S*AP protocols,
-some URL heuristics might be necessary in order to achieve true server
-enumeration.}.
-
-Hence, for now we recommend setting the standard HTTP server header as
-per RFC 2616.  However, against most of what is found at the time of
-writing, we recommend to include product token(s)
-(cf.sect.~\ref{sect:client}) for the VO software actually processing the
-request.  For instance, use \verb|DaCHS/2.2.1 twistedWeb/18.9.0| rather than
-\verb|TwistedWeb/18.9.0| or \verb|vollt/2.3 nginx/1.14.0| rather than
-\verb|nginx/1.14.0|.  As on the client side, list VO components in front
-of more generic HTTP server software.
 
 \appendix
 \section{Changes from Previous Versions}
