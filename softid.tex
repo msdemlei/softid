@@ -275,11 +275,18 @@ contain the header
 \begin{verbatim}
 User-Agent: STILTS/3.1-4 (IVOA-validate) Java/1.8.0_181
 \end{verbatim}
-or maybe (line break for typographic reasons)
+or maybe 
+\iftth
+\begin{verbatim}
+User-Agent: STILTS/3.1-4 (IVOA-validate http://validators.org/results) Java/1.8.0_181
+\end{verbatim}
+\else
+(line break for typographic reasons)
 \begin{verbatim}
 User-Agent: STILTS/3.1-4 (IVOA-validate
             http://validators.org/results) Java/1.8.0_181
 \end{verbatim}
+\fi
 
 The server identification example, tapstat.py, discussed in
 section~\ref{sect:server} illustrates one way to add such headers using
