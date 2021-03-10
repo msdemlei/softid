@@ -219,13 +219,14 @@ $$\hbox{\verb|(IVOA-<op-purpose> <optional-extra-text>)|.}$$
 Suggested {\tt op-purpose} values are currently:
 
 \begin{description}
-\item[validate]
-client is performing service validation, e.g., to assess service
-conformance to standards.
-\item[monitor] client is performing service monitoring, e.g.,
-to assess service availability or performance.
-\item[harvest] client is harvesting records e.g., to populate 
-a registry or registry-like database.
+\item[test]
+The access happens to test whether services are available
+(monitoring) and/or standards-compliant (validation); at this point,
+no good reason to separate the different cases was identified.
+\item[copy] 
+The access happens to replicate (parts of) the content published through
+the service, be it for aggregation (harvesting) or re-publication
+(mirroring).
 \end{description}
 
 This list may evolve in the future; extensions should be proposed on 
@@ -245,7 +246,7 @@ Formally:
 \begin{verbatim}
 ivoa-comment  = "(IVOA-" op-purpose *( 
     ctext | quoted-pair | comment ) ")"
-op-purpose   = "validate" | "monitor" | "harvest" | token
+op-purpose   = "test" | "copy" | token
 \end{verbatim}
 
 Tokens of the form \verb|ivoa-comment| should not appear in the
@@ -258,7 +259,7 @@ categories.
 This arrangement allows service operators to test in their logs for
 \headername{User-Agent} values
 whose content matches the sequence ``\verb|(IVOA-|'', or
-perhaps ``\verb|(IVOA-validate|'', and adjust their usage statistics
+perhaps ``\verb|(IVOA-test|'', and adjust their usage statistics
 appropriately. Note, however, that it is not feasible to force operational
 clients to follow this convention, so service operators will still need
 to be careful in analysing their usage statistics.
@@ -273,17 +274,17 @@ User-Agent: STILTS/3.1-4 Java/1.8.0_181
 while a query from the STILTS taplint TAP service validator might
 contain the header
 \begin{verbatim}
-User-Agent: STILTS/3.1-4 (IVOA-validate) Java/1.8.0_181
+User-Agent: STILTS/3.1-4 (IVOA-test) Java/1.8.0_181
 \end{verbatim}
 or maybe 
 \iftth
 \begin{verbatim}
-User-Agent: STILTS/3.1-4 (IVOA-validate http://validators.org/results) Java/1.8.0_181
+User-Agent: STILTS/3.1-4 (IVOA-test http://validators.org/results) Java/1.8.0_181
 \end{verbatim}
 \else
 (line break for typographic reasons)
 \begin{verbatim}
-User-Agent: STILTS/3.1-4 (IVOA-validate
+User-Agent: STILTS/3.1-4 (IVOA-test
             http://validators.org/results) Java/1.8.0_181
 \end{verbatim}
 \fi
